@@ -44,7 +44,8 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
             whoami
-            sudo apt install docker.io docker-compose
+            sudo apt update
+            sudo apt install docker.io docker-compose -y
 
     # - name: Transfer Build Files to Ubuntu Instance
     #   uses: appleboy/scp-action@master
