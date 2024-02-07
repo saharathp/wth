@@ -89,7 +89,7 @@ function App() {
             setAge(event.target.value);
           }}
         />
-        <label>Country:</label>
+        <label>WhichCountry:</label>
         <input
           type="text"
           onChange={(event) => {
