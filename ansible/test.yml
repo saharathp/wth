@@ -1,11 +1,12 @@
 ---
 - name: Test-Playbook
-  hosts: localhost
+  hosts: test
+  remote_user: ubuntu
   become: yes
-  # vars:
-  #   # path of the ssh key in local 
-  #   ansible_ssh_private_key_file: "/Users/sshrestha/Downloads/ans.pem"
+  vars:
+    # path of the ssh key in local 
+    ansible_ssh_private_key_file: "/Users/sshrestha/Downloads/keys/new/ansiblekey.pem"
   roles:  
-    - java
+    - mysql
 
 
