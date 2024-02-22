@@ -1,0 +1,68 @@
+--- 
+    - name: Create a Monitor Group
+      become: true
+      ansible.builtin.group:
+        name: "{{monitor_user}}"
+
+    - name: create monitor user
+      become: true
+      ansible.builtin.user:
+        name: "{{monitor_user}}"
+        group: "{{monitor_group}}"
+
+    - name: download node_exporter 1.0.1 zip file
+      ansible.builtin.get_url:
+        url: "{{download_url}}"
+        dest: /tmp
+
+    - name: Create a Node Exporter Directory
+      become: true
+      ansible.builtin.file:
+        path: /opt/node-exporter
+        owner: "{{monitor_user}}"
+        group: "{{monitor_group}}"
+        mode: 0755
+        recurse: yes
+
+    - name: unarchive a file
+      ansible.builtin.unarchive:
+        src: /tmp/node_exporter-1.0.1.linux-amd64.tar.gz     
+        dest: /opt/node-exporter
+        remote_src: yes
+
+    - name: Change ownership of node-exporter  directory
+      become: true
+      file:
+        path: /opt/node-exporter
+        owner: "{{monitor_user}}"
+        group: "{{monitor_group}}"
+        mode: 0755
+        recurse: yes
+        state: directory
+
+    - name: Create a symbolic link for prometheus to bin 
+      become: true
+      ansible.builtin.file:
+        src: /opt/node-exporter/node_exporter-1.0.1.linux-amd64/node_exporter
+        dest: /usr/local/bin/node_exporter
+        owner: "{{monitor_user}}"
+        group: "{{monitor_group}}"
+        state: link
+
+    - name: set prometheus systemd
+      become: true
+      ansible.builtin.template:
+        src:  node_exporter.j2
+        dest: /etc/systemd/system/node_exporter.service
+        owner: "{{monitor_user}}"
+        group: "{{monitor_user}}"
+        mode: 0744
+
+    - name: Reload the SystemD to re-read configurations and start node exporter
+      become: yes
+      systemd:
+        daemon-reload: yes
+        name: node_exporter
+        enabled: yes
+        state: started
+

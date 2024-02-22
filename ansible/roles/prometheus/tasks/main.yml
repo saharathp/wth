@@ -103,15 +103,15 @@
         group: "{{monitor_group}}"
         state: link
 
-    - name: set nginx conf file for prometheus 
-      become: true
-      ansible.builtin.template:
-        src:  prometheus-conf.j2
-        dest: /etc/nginx/sites-enabled/prometheus.conf
-    - name: restart nginx
-      service:
-        name: nginx
-        state: restarted
+    # - name: set nginx conf file for prometheus 
+    #   become: true
+    #   ansible.builtin.template:
+    #     src:  prometheus-conf.j2
+    #     dest: /etc/nginx/sites-enabled/prometheus.conf
+    # - name: restart nginx
+    #   service:
+    #     name: nginx
+    #     state: restarted
 
     - name: set systemd config fpr prometheus 
       become: true
