@@ -1,0 +1,42 @@
+---
+- name: Clone a Git repository
+  ansible.builtin.git:
+    repo: https://github.com/sshresthadh/devops-class.git
+    dest: /home/ubuntu/test
+    version: main
+
+- name: Install the gpg key for nodejs LTS
+  apt_key:
+    url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+    state: present
+    
+- name: Install the nodejs LTS repos
+  apt_repository:
+    repo: "deb https://deb.nodesource.com/node_14.x focal main"
+    state: present
+    update_cache: yes
+
+- name: Install the nodejs
+  apt:
+    name: nodejs
+    state: present
+
+- name: NPM Install
+  shell: >
+    cd /home/ubuntu/test/all_in_docker/server
+    npm i
+
+- name: Create systemd service file
+  ansible.builtin.template:
+    src: backend.j2  # Path to your systemd service template file
+    dest: /etc/systemd/system/backend.service
+  notify: Reload systemd
+
+- name: Start and enable the service
+  ansible.builtin.service:
+    name: backend
+    state: started
+    enabled: yes
+  notify: Reload systemd
+
+

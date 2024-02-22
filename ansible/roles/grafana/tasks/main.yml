@@ -1,0 +1,36 @@
+--- 
+  - name: Add the Grafana GPG key and APT repository
+    become: yes
+    shell: |
+       curl https://packages.grafana.com/gpg.key | sudo apt-key add -
+       add-apt-repository "deb https://packages.grafana.com/oss/deb stable main" --yes
+      
+  - name: Update apt
+    apt:
+      update_cache: yes
+
+  - name: Install grafana through apt
+    ansible.builtin.apt:
+      name: grafana
+      state: latest
+      install_recommends: yes
+        
+  - name: Reload the SystemD to re-read configurations and start grafana
+    become: yes
+    systemd:
+      daemon-reload: yes
+      name: grafana-server
+      enabled: yes
+      state: started
+
+  - name: set nginx conf file for prometheus 
+    become: true
+    ansible.builtin.template:
+      src:  grafana-conf.j2
+      dest: /etc/nginx/sites-enabled/grafana.conf
+  
+  - name: restart nginx
+    service:
+      name: nginx
+      state: restarted
+

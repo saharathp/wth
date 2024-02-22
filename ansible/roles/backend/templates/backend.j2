@@ -1,0 +1,31 @@
+[Unit]
+
+Description=Your Node.js Backend
+
+After=network.target
+
+
+
+[Service]
+
+Environment=NODE_ENV=production
+
+ExecStart=/usr/bin/node index.js
+
+WorkingDirectory=/home/ubuntu/devops-class/all_in_docker/server
+
+Restart=always
+
+RestartSec=10
+
+StandardOutput=syslog
+
+StandardError=syslog
+
+SyslogIdentifier=client
+
+
+
+[Install]
+
+WantedBy=multi-user.target

@@ -1,0 +1,132 @@
+---
+    - name: Create a Monitor Group
+      become: true
+      ansible.builtin.group:
+        name: "{{monitor_user}}"
+
+    - name: create monitor user
+      become: true
+      ansible.builtin.user:
+        name: "{{monitor_user}}"
+        group: "{{monitor_group}}"
+    
+    - name: download prometheus 2.31 zip file
+      become: true
+      ansible.builtin.get_url:
+        url: "{{download_url}}"
+        dest: /tmp
+
+    - name: Create a Prometheus Directory
+      become: true
+      ansible.builtin.file:
+        path: /opt/prometheus
+        owner: "{{monitor_user}}"
+        group: "{{monitor_group}}"
+        mode: 0755
+        recurse: yes
+
+    - name: Create a Prometheus Directory
+      become: true
+      ansible.builtin.file:
+        path: /var/lib/prometheus
+        owner: "{{monitor_user}}"
+        group: "{{monitor_group}}"
+        mode: 0755
+        recurse: yes
+
+    - name: unarchive a file
+      become: true
+      ansible.builtin.unarchive:
+        src: /tmp/prometheus-2.31.0.linux-amd64.tar.gz     
+        dest: /opt/prometheus
+        remote_src: yes
+
+    - name: Change ownership of prometheus  directory
+      become: true
+      file:
+        path: /opt/prometheus
+        owner: "{{monitor_user}}"
+        group: "{{monitor_group}}"
+        mode: 0755
+        recurse: yes
+        state: directory
+
+    - name: Create a Prometheus Directory
+      become: true
+      ansible.builtin.file:
+        path: /etc/prometheus
+        owner: "{{monitor_user}}"
+        group: "{{monitor_group}}"
+        mode: 0755
+        recurse: yes
+    - name: Create a symbolic link for prometheus to bin 
+      become: true
+      ansible.builtin.file:
+        src: /opt/prometheus/prometheus-2.31.0.linux-amd64/prometheus
+        dest: /usr/local/bin/prometheus
+        owner: "{{monitor_user}}"
+        group: "{{monitor_group}}"
+        state: link
+
+    - name: Create a symbolic link for promtool to bin 
+      become: true
+      ansible.builtin.file:
+        src: /opt/prometheus/prometheus-2.31.0.linux-amd64/promtool
+        dest: /usr/local/bin/promtool
+        owner: "{{monitor_user}}"
+        group: "{{monitor_group}}"
+        state: link
+    # - name: Create a symbolic link for prometheus to bin 
+    #   become: true
+    #   ansible.builtin.file:
+    #     src: /opt/prometheus/prometheus-2.31.0.linux-amd64/consoles/
+    #     dest: /etc/prometheus/consoles/
+    #     owner: "{{monitor_user}}"
+    #     group: "{{monitor_group}}"
+    #     state: link
+
+    # - name: Create a symbolic link for prometheus to bin 
+    #   become: true
+    #   ansible.builtin.file:
+    #     src: /opt/prometheus/prometheus-2.31.0.linux-amd64/console_libraries/
+    #     dest: /etc/prometheus/console_libraries/
+    #     owner: "{{monitor_user}}"
+    #     group: "{{monitor_group}}"
+    #     state: link
+
+    - name: Create a symbolic link for prometheus config file
+      become: true
+      ansible.builtin.file:
+        src: /opt/prometheus/prometheus-2.31.0.linux-amd64/prometheus.yml
+        dest: /etc/prometheus/prometheus.yml
+        owner: "{{monitor_user}}"
+        group: "{{monitor_group}}"
+        state: link
+
+    - name: set nginx conf file for prometheus 
+      become: true
+      ansible.builtin.template:
+        src:  prometheus-conf.j2
+        dest: /etc/nginx/sites-enabled/prometheus.conf
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+
+    - name: set systemd config fpr prometheus 
+      become: true
+      ansible.builtin.template:
+        src:  prometheus.j2
+        dest: /etc/systemd/system/prometheus.service
+        owner: "{{monitor_user}}"
+        group: "{{monitor_user}}"
+        mode: 0744
+
+    - name: Reload the SystemD to re-read configurations and start prometheus
+      become: yes
+      systemd:
+        daemon-reload: yes
+        name: prometheus
+        enabled: yes
+        state: started
+

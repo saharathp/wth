@@ -139,9 +139,8 @@
       service:
         name: apparmor
         state: restarted
+      notify: Restart mysql
+      
 
-    - name: Restart MySQL service
-      service:
-        name: mysql
-        state: restarted
+    
 

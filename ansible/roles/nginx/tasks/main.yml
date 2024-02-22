@@ -6,6 +6,7 @@
   - name: start nginx
     service:
       name: nginx
-      state: started
+      state: stopped
+    notify: restart nginx
   
    

@@ -1,0 +1,4 @@
+#defining variables
+---
+prometheus_version: "2.31"
+download_url: "https://github.com/prometheus/prometheus/releases/download/v2.31.0/prometheus-2.31.0.linux-amd64.tar.gz"
