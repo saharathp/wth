@@ -36,10 +36,6 @@ pipeline {
 
     post {
         always {
-            script {
-                
-                    sh 'mv all_in_docker/client/build /var/www/html'
-            }
             cleanWs() 
         }
         success {
