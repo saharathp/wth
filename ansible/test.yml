@@ -5,9 +5,8 @@
   become: yes
   vars:
     # path of the ssh key in local 
-    ansible_ssh_private_key_file: "/Users/sshrestha/Downloads/keys/new/promet.pem"
+    ansible_ssh_private_key_file: "/home/sara.pem"
   roles:  
-    - prometheus
-    - grafana
+    - backend
 
 
