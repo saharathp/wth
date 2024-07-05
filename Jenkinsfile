@@ -3,9 +3,9 @@ pipeline {
     
     tools {nodejs "node 14"}
 
-    //environment {
-      //  DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') 
-    //}
+    // environment {
+    //     DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') 
+    // }
 
     stages {
         stage('Checkout') {
@@ -13,7 +13,6 @@ pipeline {
                 checkout scm
             }
         }
-
         stage('Install Dependencies') {
             steps {
                 dir('all_in_docker/client') {
