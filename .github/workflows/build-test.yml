@@ -28,7 +28,7 @@ jobs:
         script: |
           cd wth
           cd all_in_docker
-          sudo apt update
+          git pull origin main
           sudo docker-compose build 
           sudo docker-compose up -d
 #            # cd /home/ubuntu/devops-class
