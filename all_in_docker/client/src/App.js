@@ -75,14 +75,14 @@ function App() {
   return (
     <div className="App">
       <div className="information">
-        <label>Name:</label>
+        <label>What is your name:</label>
         <input
           type="text"
           onChange={(event) => {
             setName(event.target.value);
           }}
         />
-        <label>Age:</label>
+        <label>What is your age:</label>
         <input
           type="number"
           onChange={(event) => {
