@@ -25,8 +25,7 @@ jobs:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: 
-            whoami
+        script:
             ls
             cd wth
             cd all_in_docker
