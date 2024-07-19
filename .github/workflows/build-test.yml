@@ -26,6 +26,7 @@ jobs:
         username: ${{ secrets.REMOTE_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script:
+            ls
             cd wth
             cd all_in_docker
             docker-compose build 
