@@ -27,6 +27,9 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: 
             whoami
+            ls
+            cd wth
+            cd all_in_docker
             docker-compose build 
             docker-compose up -d
 #            # cd /home/ubuntu/devops-class
